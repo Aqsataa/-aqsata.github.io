@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — Muhammad Kaisar Aqsata Nugroho</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-black: #08080A;
+      --bg-surface: #111115;
+      --bg-card: #16161B;
+      --bg-card-hover: #1E1E25;
+      --crimson: #D91E2A;
+      --crimson-glow: rgba(217, 30, 42, 0.25);
+      --text-white: #F8F8FA;
+      --text-muted: #9E9EA8;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --font-display: 'Anton', sans-serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-script: 'Caveat', cursive;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: var(--bg-black); color: var(--text-white); font-family: var(--font-sans); }
+    body { background: var(--bg-black); color: var(--text-white); overflow-x: hidden; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font-family: inherit; }
+
+    .container { width: 100%; max-width: 1220px; margin: 0 auto; padding: 0 24px; }
+
+    /* LOADER & TOAST */
+    .global-loader {
+      position: fixed; inset: 0; background: var(--bg-black);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .global-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .spinner-ring {
+      width: 44px; height: 44px; border: 3px solid rgba(217, 30, 42, 0.2);
+      border-top-color: var(--crimson); border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
+    .toast-item {
+      background: var(--bg-card); border: 1px solid var(--border-strong); border-left: 4px solid var(--crimson);
+      color: var(--text-white); padding: 13px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 500;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); animation: slideInRight 0.25s ease;
+    }
+    .toast-item.success { border-left-color: #10B981; }
+    .toast-item.error { border-left-color: #EF4444; }
+    @keyframes slideInRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 900; background: rgba(8, 8, 10, 0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); }
+    .navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+    .nav-brand-stack { display: flex; flex-direction: column; line-height: 1.25; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+    .nav-brand-stack span:first-child { color: var(--crimson); }
+    .nav-links { display: flex; align-items: center; gap: 26px; }
+    .nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); transition: color 0.2s ease; }
+    .nav-links a:hover { color: var(--text-white); }
+    .nav-status { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .status-spark { color: var(--crimson); font-size: 15px; line-height: 1; }
+    .mobile-menu-btn { display: none; background: transparent; border: 1px solid var(--border-strong); color: var(--text-white); width: 40px; height: 40px; border-radius: 8px; align-items: center; justify-content: center; cursor: pointer; }
+    .mobile-drawer { display: none; background: var(--bg-surface); border-bottom: 1px solid var(--border-strong); padding: 16px 24px 24px; flex-direction: column; gap: 14px; }
+    .mobile-drawer.open { display: flex; }
+    .mobile-drawer a { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 0; }
+
+    /* HERO SECTION */
+    .hero-section { position: relative; padding: 36px 0 80px; overflow: hidden; border-bottom: 1px solid var(--border-subtle); }
+    .hero-bg-word {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      font-family: var(--font-display); font-size: clamp(92px, 21vw, 290px); line-height: 0.85;
+      letter-spacing: 0.01em; text-transform: uppercase;
+      background: linear-gradient(180deg, #9C141E 0%, #3D070B 78%, rgba(8, 8, 10, 0) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      user-select: none; pointer-events: none; z-index: 1; white-space: nowrap;
+    }
+    .hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: 1.05fr 1.2fr 0.75fr; gap: 28px; align-items: end; min-height: 540px; padding-top: 85px; }
+    .hero-left { padding-bottom: 18px; }
+    .hero-hello { font-family: var(--font-script); font-size: 32px; color: var(--text-white); margin-bottom: -4px; display: block; }
+    .hero-name { font-family: var(--font-display); font-size: clamp(42px, 5.4vw, 72px); line-height: 0.96; letter-spacing: 0.01em; text-transform: uppercase; margin-bottom: 14px; }
+    .hero-role { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--crimson); margin-bottom: 14px; }
+    .hero-bio { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; margin-bottom: 22px; max-width: 400px; }
+    .hero-badge-row { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 22px; }
+    .pulse-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--crimson); box-shadow: 0 0 0 4px rgba(217, 30, 42, 0.25); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .hero-center { display: flex; justify-content: center; align-items: flex-end; position: relative; }
+    .hero-portrait-frame { position: relative; width: 100%; max-width: 430px; aspect-ratio: 3 / 4; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; background: transparent; }
+    .hero-portrait-frame::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(8, 8, 10, 0) 68%, rgba(8, 8, 10, 0.85) 92%, #08080A 100%);
+      pointer-events: none;
+    }
+    .hero-portrait-img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; mix-blend-mode: lighten; filter: contrast(1.06); }
+
+    .hero-right { display: flex; flex-direction: column; justify-content: space-between; gap: 20px; padding-bottom: 18px; }
+    .hero-tagline-box { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--text-muted); line-height: 1.5; padding-bottom: 18px; border-bottom: 1px solid var(--border-subtle); }
+    .hero-metrics-stack { display: flex; flex-direction: column; gap: 18px; }
+    .metric-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; background: rgba(22, 22, 27, 0.75); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); transition: transform 0.2s ease, border-color 0.2s ease; }
+    .metric-item:hover { transform: translateX(4px); border-color: rgba(217, 30, 42, 0.45); }
+    .metric-val { font-family: var(--font-display); font-size: 38px; line-height: 1; color: var(--crimson); min-width: 68px; }
+    .metric-lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); line-height: 1.35; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 20px; border-radius: 8px; font-size: 12.5px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: var(--crimson); color: #FFFFFF; }
+    .btn-primary:hover:not(:disabled) { background: #B81620; transform: translateY(-1px); box-shadow: 0 8px 20px var(--crimson-glow); }
+    .btn-secondary { background: var(--bg-card); color: var(--text-white); border-color: var(--border-strong); }
+    .btn-secondary:hover:not(:disabled) { background: var(--bg-card-hover); border-color: var(--text-white); }
+    .btn-danger { background: rgba(239, 68, 68, 0.14); color: #FF6B74; border-color: rgba(239, 68, 68, 0.35); }
+    .btn-danger:hover:not(:disabled) { background: #DC2626; color: #FFFFFF; }
+    .btn-sm { padding: 7px 12px; font-size: 11px; }
+
+    /* SELECTED PROJECT & CURRICULUM VITAE (2 GOOGLE DRIVE LINK BUTTONS) */
+    .section-block { padding: 74px 0; border-bottom: 1px solid var(--border-subtle); }
+    .section-header-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 34px; }
+    .section-title { font-family: var(--font-display); font-size: clamp(28px, 3.6vw, 40px); letter-spacing: 0.02em; text-transform: uppercase; }
+    .section-eyebrow { font-size: 11.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--crimson); margin-bottom: 8px; display: block; }
+
+    .drive-links-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .drive-link-btn-card {
+      display: flex; flex-direction: column; justify-content: space-between; gap: 22px;
+      background: linear-gradient(145deg, #17171D 0%, #101014 100%);
+      border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 30px 28px;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      position: relative; overflow: hidden;
+    }
+    .drive-link-btn-card:hover {
+      transform: translateY(-4px); border-color: var(--crimson);
+      background: linear-gradient(145deg, #1E181C 0%, #131318 100%);
+      box-shadow: 0 18px 40px rgba(217, 30, 42, 0.18);
+    }
+    .drive-link-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .drive-link-icon-badge {
+      width: 52px; height: 52px; border-radius: 12px;
+      background: rgba(217, 30, 42, 0.14); border: 1px solid rgba(217, 30, 42, 0.35);
+      color: var(--crimson); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.25s ease;
+    }
+    .drive-link-btn-card:hover .drive-link-icon-badge { background: var(--crimson); color: #FFFFFF; }
+    .drive-link-num { font-family: var(--font-display); font-size: 32px; line-height: 1; color: rgba(255, 255, 255, 0.16); transition: color 0.25s ease; }
+    .drive-link-btn-card:hover .drive-link-num { color: var(--crimson); }
+    .drive-link-title { font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; color: var(--text-white); margin-bottom: 8px; }
+    .drive-link-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; }
+    .drive-link-cta-bar {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 13px 20px; border-radius: 8px; background: var(--crimson); color: #FFFFFF;
+      font-size: 12.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; transition: background 0.2s ease;
+    }
+    .drive-link-btn-card:hover .drive-link-cta-bar { background: #B81620; }
+
+    /* ABOUT & EXPERIENCE */
+    .about-exp-grid { display: grid; grid-template-columns: 0.95fr 1.25fr; gap: 44px; align-items: start; }
+    .about-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 30px; position: sticky; top: 94px; }
+    .about-text { font-size: 14.5px; color: #D2D2DC; line-height: 1.75; white-space: pre-line; margin-bottom: 22px; }
+    .about-meta-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(217, 30, 42, 0.12); border: 1px solid rgba(217, 30, 42, 0.3); padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+    .exp-timeline { display: flex; flex-direction: column; gap: 20px; }
+    .exp-item { background: var(--bg-card); border: 1px solid var(--border-subtle); border-left: 3px solid var(--crimson); border-radius: var(--radius-md); padding: 22px 24px; transition: background 0.2s ease; }
+    .exp-item:hover { background: var(--bg-card-hover); }
+    .exp-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+    .exp-role { font-size: 16px; font-weight: 800; }
+    .exp-period { font-size: 12px; font-weight: 700; color: var(--crimson); }
+    .exp-company-row { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; }
+    .exp-type-badge { background: rgba(255, 255, 255, 0.06); padding: 2px 8px; border-radius: 4px; font-size: 11px; color: var(--text-white); }
+    .exp-desc { font-size: 13.5px; color: #C4C4CF; line-height: 1.65; white-space: pre-line; }
+
+    /* EDUCATION, SKILLS, WORK PROCESS & QUOTE */
+    .tri-editorial-grid { display: grid; grid-template-columns: 1.05fr 1.05fr 0.85fr; gap: 32px; align-items: stretch; }
+    .edu-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+    .edu-item { padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle); }
+    .edu-row-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 3px; }
+    .edu-title { font-size: 14px; font-weight: 700; }
+    .edu-period { font-size: 11.5px; font-weight: 700; color: var(--crimson); white-space: nowrap; }
+    .edu-inst { font-size: 12.5px; color: var(--text-muted); margin-bottom: 4px; }
+    .edu-details { font-size: 12px; color: #A8A8B3; line-height: 1.5; }
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-chip { background: var(--bg-card); border: 1px solid var(--border-strong); padding: 7px 12px; border-radius: 5px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; transition: all 0.2s ease; }
+    .skill-chip:hover { border-color: var(--crimson); background: rgba(217, 30, 42, 0.14); }
+
+    .process-list { display: flex; flex-direction: column; gap: 18px; }
+    .process-item { display: flex; align-items: flex-start; gap: 14px; }
+    .process-num { font-family: var(--font-display); font-size: 20px; color: var(--crimson); min-width: 26px; padding-top: 4px; }
+    .process-icon-box { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .process-title { font-size: 13.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--crimson); margin-bottom: 3px; }
+    .process-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+
+    .crimson-quote-card { background: linear-gradient(160deg, #B51621 0%, #52090E 100%); border-radius: var(--radius-lg); padding: 34px 28px; display: flex; flex-direction: column; justify-content: space-between; }
+    .quote-mark { font-family: var(--font-display); font-size: 68px; line-height: 0.8; color: rgba(255, 255, 255, 0.35); margin-bottom: 14px; }
+    .quote-body { font-size: 17px; font-weight: 600; line-height: 1.55; color: #FFFFFF; margin-bottom: 24px; }
+    .quote-signature { font-family: var(--font-script); font-size: 36px; color: #FFFFFF; margin-bottom: 24px; }
+    .quote-footer-note { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.85); border-top: 1px solid rgba(255, 255, 255, 0.22); padding-top: 14px; }
+
+    /* CONTACT & FOOTER */
+    .contact-section { padding: 76px 0 40px; }
+    .contact-grid { display: grid; grid-template-columns: 0.95fr 1.15fr; gap: 40px; align-items: center; margin-bottom: 56px; }
+    .contact-big-heading { font-family: var(--font-display); font-size: clamp(40px, 5vw, 62px); line-height: 1.02; text-transform: uppercase; margin-bottom: 16px; }
+    .contact-subtext { font-size: 14px; color: var(--text-muted); max-width: 430px; margin-bottom: 26px; }
+    .contact-cards-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .contact-row { display: flex; align-items: center; gap: 14px; background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-md); transition: all 0.2s ease; cursor: pointer; }
+    .contact-row:hover { border-color: var(--crimson); background: var(--bg-card-hover); transform: translateY(-2px); }
+    .contact-icon-box { width: 42px; height: 42px; border-radius: 50%; background: rgba(217, 30, 42, 0.15); color: var(--crimson); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .contact-row-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .contact-row-val { font-size: 13px; font-weight: 700; color: var(--text-white); }
+    .footer-bottom { border-top: 1px solid var(--border-subtle); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-muted); }
+    .secret-admin-trigger { cursor: default; user-select: none; }
+
+    /* MODALS */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.82); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 9500; }
+    .modal-backdrop.open { display: flex; }
+    .modal-box { background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75); }
+    .modal-close-btn { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; background: rgba(8, 8, 10, 0.8); border: 1px solid var(--border-strong); color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
+
+    /* ADMIN PANEL */
+    .admin-wrapper { display: none; min-height: 100vh; background: #09090C; }
+    .admin-wrapper.active { display: block; }
+    .public-wrapper.hidden { display: none; }
+    .login-box-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .login-card { background: var(--bg-surface); border: 1px solid var(--border-strong); border-top: 4px solid var(--crimson); border-radius: var(--radius-lg); padding: 36px 30px; width: 100%; max-width: 410px; }
+    .admin-topbar { background: var(--bg-surface); border-bottom: 1px solid var(--border-strong); padding: 16px 0; position: sticky; top: 0; z-index: 800; }
+    .admin-topbar-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .admin-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+    .admin-tab-btn { background: var(--bg-card); border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+    .admin-tab-btn.active, .admin-tab-btn:hover { background: var(--crimson); border-color: var(--crimson); color: #FFFFFF; }
+    .admin-panel-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-label { font-size: 12px; font-weight: 700; color: #D0D0DA; }
+    .form-control { background: #0D0D11; border: 1px solid var(--border-strong); color: var(--text-white); padding: 10px 13px; border-radius: 8px; font-size: 13.5px; outline: none; transition: border-color 0.2s ease; }
+    .form-control:focus { border-color: var(--crimson); }
+    textarea.form-control { min-height: 92px; resize: vertical; }
+    .img-preview-box { width: 120px; height: 120px; border-radius: 10px; border: 1px dashed var(--border-strong); background: #0D0D11; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 11px; color: var(--text-muted); text-align: center; }
+    .img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+    .admin-list-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .admin-list-table th, .admin-list-table td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+    .admin-list-table th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; padding-top: 56px; }
+      .hero-center { order: -1; }
+      .hero-portrait-frame { max-width: 340px; }
+      .hero-metrics-stack { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .about-exp-grid, .tri-editorial-grid, .contact-grid { grid-template-columns: 1fr; }
+      .about-card { position: static; }
+    }
+    @media (max-width: 680px) {
+      .nav-links, .nav-status { display: none; }
+      .mobile-menu-btn { display: flex; }
+      .hero-metrics-stack, .drive-links-grid, .contact-cards-list, .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+      .admin-list-table { font-size: 11.5px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="globalLoader" class="global-loader">
+    <div class="spinner-ring"></div>
+    <p style="margin-top:14px;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#9E9EA8;">Memuat Portfolio...</p>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- PUBLIC PORTFOLIO VIEW -->
+  <div id="publicView" class="public-wrapper">
+    <header class="navbar">
+      <div class="container navbar-inner">
+        <a href="#top" class="nav-brand-stack">
+          <span id="navRolePrimary">DIGITAL MARKETING</span>
+          <span id="navRoleSecondary">CREATIVE &amp; UI/UX</span>
+        </a>
+        <nav class="nav-links">
+          <a href="#projects">Portfolio &amp; CV</a>
+          <a href="#about">About</a>
+          <a href="#experience">Experience</a>
+          <a href="#education">Skills &amp; Process</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-status">
+          <span id="navAvailability">AVAILABLE FOR FREELANCE</span>
+          <span class="status-spark">&#10022;</span>
+        </div>
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="mobileDrawer" class="mobile-drawer">
+        <a href="#projects" class="mobile-nav-link">Selected Project &amp; Curriculum Vitae</a>
+        <a href="#about" class="mobile-nav-link">About Me</a>
+        <a href="#experience" class="mobile-nav-link">Experience</a>
+        <a href="#education" class="mobile-nav-link">Education &amp; Skills</a>
+        <a href="#contact" class="mobile-nav-link">Contact</a>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="top" class="hero-section">
+      <div class="hero-bg-word" aria-hidden="true">PORTFOLIO</div>
+      <div class="container hero-grid">
+        <div class="hero-left">
+          <span class="hero-hello">Hello, I'm</span>
+          <h1 id="heroFullName" class="hero-name">MUHAMMAD KAISAR AQSATA NUGROHO</h1>
+          <div id="heroHeadline" class="hero-role">DIGITAL MARKETING | GRAPHIC DESIGN | UI/UX | CONTENT CREATOR</div>
+          <p id="heroShortBio" class="hero-bio"></p>
+          <div class="hero-badge-row">
+            <span class="pulse-dot"></span>
+            <span id="heroLocationBadge">SIDOARJO, INDONESIA</span>
+          </div>
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">Portfolio &amp; CV</a>
+            <a href="#contact" class="btn btn-secondary">Let's Talk</a>
+          </div>
+        </div>
+
+        <div class="hero-center">
+          <div class="hero-portrait-frame" id="heroPortraitContainer">
+            <img src="https://lh3.googleusercontent.com/d/1b32iBCb1LCPiOe6TDL8np_eXn44XxVGC" alt="Muhammad Kaisar Aqsata Nugroho" class="hero-portrait-img">
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-tagline-box">
+            <span class="status-spark">&#10022;</span>
+            <span>Turning creative visuals and data-driven marketing into measurable brand growth.</span>
+          </div>
+          <div class="hero-metrics-stack">
+            <div class="metric-item"><div id="metric1Val" class="metric-val">3+</div><div id="metric1Lbl" class="metric-lbl">YEARS<br>EXPERIENCE</div></div>
+            <div class="metric-item"><div id="metric2Val" class="metric-val">50+</div><div id="metric2Lbl" class="metric-lbl">PROJECTS<br>COMPLETED</div></div>
+            <div class="metric-item"><div id="metric3Val" class="metric-val">10+</div><div id="metric3Lbl" class="metric-lbl">HAPPY<br>CLIENTS</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELECTED PROJECT & CURRICULUM VITAE (2 LINK GOOGLE DRIVE) -->
+    <section id="projects" class="section-block">
+      <div class="container">
+        <div class="section-header-row">
+          <div>
+            <span class="section-eyebrow">Official Documents &amp; Works</span>
+            <h2 class="section-title">SELECTED PROJECT &amp; CURRICULUM VITAE</h2>
+          </div>
+        </div>
+        <div id="projectsGrid" class="drive-links-grid"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT ME & EXPERIENCE -->
+    <section id="about" class="section-block">
+      <div class="container about-exp-grid">
+        <div class="about-card">
+          <span class="section-eyebrow">Profile Summary</span>
+          <h2 class="section-title" style="margin-bottom:18px;">ABOUT ME</h2>
+          <div id="aboutMeText" class="about-text"></div>
+          <div class="about-meta-pill">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="aboutLocation">Sidoarjo, Jawa Timur</span>
+          </div>
+        </div>
+        <div id="experience">
+          <span class="section-eyebrow">Career Track</span>
+          <h2 class="section-title" style="margin-bottom:24px;">EXPERIENCE</h2>
+          <div id="experienceList" class="exp-timeline"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION, SKILLS, WORK PROCESS & QUOTE -->
+    <section id="education" class="section-block">
+      <div class="container tri-editorial-grid">
+        <div>
+          <h2 class="section-title" style="margin-bottom:22px;">EDUCATION &amp; SKILLS</h2>
+          <span class="section-eyebrow">EDUCATION &amp; CERTIFICATIONS</span>
+          <div id="educationList" class="edu-list"></div>
+          <span class="section-eyebrow">SKILLS &amp; TOOLS</span>
+          <div id="skillsList" class="skills-wrap"></div>
+        </div>
+        <div>
+          <h2 class="section-title" style="margin-bottom:22px;">WORK PROCESS</h2>
+          <div id="workProcessList" class="process-list"></div>
+        </div>
+        <div class="crimson-quote-card">
+          <div>
+            <div class="quote-mark">&ldquo;</div>
+            <p id="quoteText" class="quote-body"></p>
+            <div id="quoteAuthor" class="quote-signature">Kaisar Aqsata</div>
+          </div>
+          <div class="quote-footer-note">LET'S CREATE SOMETHING GREAT TOGETHER <span style="margin-left:6px;">&#10022;</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT & FOOTER -->
+    <footer id="contact" class="contact-section">
+      <div class="container">
+        <div class="contact-grid">
+          <div>
+            <span class="section-eyebrow">Get In Touch</span>
+            <h2 class="contact-big-heading">LET'S WORK TOGETHER <span class="status-spark" style="font-size:28px;vertical-align:top;">&#10022;</span></h2>
+            <p class="contact-subtext">Terbuka untuk kolaborasi proyek Digital Marketing, Desain Grafis, UI/UX, maupun peluang kerja penuh waktu. Hubungi saya langsung melalui kanal berikut.</p>
+            <a id="primaryWhatsappCta" href="https://wa.me/6283130634789" target="_blank" rel="noopener" class="btn btn-primary">
+              <span>Chat via WhatsApp</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+          <div id="contactCardsList" class="contact-cards-list"></div>
+        </div>
+        <div class="footer-bottom">
+          <div id="secretAdminTrigger" class="secret-admin-trigger">
+            &copy; <span id="footerYear">2026</span> <span id="footerOwnerName">Muhammad Kaisar Aqsata Nugroho</span>. All Rights Reserved.
+          </div>
+          <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--crimson);font-weight:700;" id="footerAvailabilityBtn">AVAILABLE FOR FREELANCE</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL KONFIRMASI HAPUS -->
+  <div id="confirmModal" class="modal-backdrop">
+    <div class="modal-box" style="max-width:420px;padding:28px;">
+      <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;">Konfirmasi Penghapusan</h3>
+      <p id="confirmModalMessage" style="font-size:13.5px;color:var(--text-muted);margin-bottom:22px;">Apakah Anda yakin ingin menghapus data ini secara permanen?</p>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" id="confirmCancelBtn" class="btn btn-secondary btn-sm">Batal</button>
+        <button type="button" id="confirmProceedBtn" class="btn btn-danger btn-sm">Ya, Hapus Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL VIEW -->
+  <div id="adminView" class="admin-wrapper">
+    <div id="adminLoginScreen" class="login-box-wrap">
+      <div class="login-card">
+        <span class="section-eyebrow">Restricted Access</span>
+        <h2 style="font-family:var(--font-display);font-size:32px;letter-spacing:0.02em;margin-bottom:8px;">ADMIN PANEL</h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:22px;">Masukkan PIN keamanan untuk mengelola konten portfolio &amp; Google Drive.</p>
+        <form id="adminLoginForm">
+          <div class="form-group">
+            <label class="form-label" for="adminPinInput">PIN Admin</label>
+            <input type="password" id="adminPinInput" class="form-control" placeholder="Masukkan PIN..." required autocomplete="current-password">
+          </div>
+          <div id="loginErrorBox" style="display:none;color:#FF6B74;font-size:12.5px;margin-bottom:14px;font-weight:600;"></div>
+          <div style="display:flex;gap:10px;margin-top:8px;">
+            <button type="submit" id="adminLoginSubmitBtn" class="btn btn-primary" style="flex:1;">Masuk Dashboard</button>
+            <button type="button" id="backToPublicBtn" class="btn btn-secondary">Kembali</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="adminDashboardScreen" style="display:none;">
+      <div class="admin-topbar">
+        <div class="container admin-topbar-inner">
+          <div>
+            <span style="font-size:11px;font-weight:800;color:var(--crimson);letter-spacing:0.1em;text-transform:uppercase;">CMS Control Center</span>
+            <h2 style="font-size:18px;font-weight:800;">Portfolio Admin Dashboard</h2>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button type="button" id="viewPublicSiteBtn" class="btn btn-secondary btn-sm">Lihat Website</button>
+            <button type="button" id="openChangePinModalBtn" class="btn btn-secondary btn-sm">Ganti PIN</button>
+            <button type="button" id="adminLogoutBtn" class="btn btn-danger btn-sm">Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container" style="padding-bottom:60px;">
+        <div class="admin-tabs" id="adminTabsNav">
+          <button type="button" class="admin-tab-btn active" data-tab="tabProfile">1. Profil, Hero &amp; Kontak</button>
+          <button type="button" class="admin-tab-btn" data-tab="tabProjects">2. Portfolio &amp; CV Links</button>
+          <button type="button" class="admin-tab-btn" data-tab="tabExperience">3. Experience</button>
+          <button type="button" class="admin-tab-btn" data-tab="tabEducation">4. Education &amp; Sertifikasi</button>
+          <button type="button" class="admin-tab-btn" data-tab="tabSkills">5. Skills</button>
+          <button type="button" class="admin-tab-btn" data-tab="tabProcess">6. Work Process</button>
+        </div>
+
+        <!-- TAB 1: PROFILE -->
+        <div id="tabProfile" class="admin-tab-content">
+          <form id="profileAdminForm" class="admin-panel-card">
+            <h3 style="font-size:17px;font-weight:800;margin-bottom:18px;color:var(--crimson);">Identitas Utama &amp; Foto Profil</h3>
+            <div class="form-grid-2">
+              <div class="form-group"><label class="form-label">Nama Lengkap</label><input type="text" id="cfgFullName" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Profesi / Headline Role</label><input type="text" id="cfgHeadlineRole" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Status Ketersediaan</label><input type="text" id="cfgAvailability" class="form-control"></div>
+              <div class="form-group"><label class="form-label">Lokasi / Domisili</label><input type="text" id="cfgLocation" class="form-control"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Deskripsi Singkat Hero Section</label><textarea id="cfgHeroShortBio" class="form-control" required></textarea></div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Upload Foto Profil Baru (Ke Google Drive)</label>
+                <input type="file" id="cfgProfilePhotoInput" class="form-control" accept="image/png, image/jpeg, image/webp">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Atau Tempel Link / ID File Google Drive (Otomatis Format lh3)</label>
+                <input type="text" id="cfgProfileDriveLink" class="form-control" placeholder="https://drive.google.com/file/d/.../view">
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+              <div class="img-preview-box" id="cfgProfilePreview">Belum ada foto</div>
+              <button type="button" id="removeProfilePhotoBtn" class="btn btn-danger btn-sm">Hapus Foto Profil</button>
+            </div>
+
+            <h3 style="font-size:16px;font-weight:800;margin:24px 0 14px;color:var(--crimson);">3 Statistik Hero (Kanan)</h3>
+            <div class="form-grid-3">
+              <div class="form-group"><label class="form-label">Angka 1</label><input type="text" id="cfgM1Val" class="form-control"><label class="form-label" style="margin-top:6px;">Label 1</label><input type="text" id="cfgM1Lbl" class="form-control"></div>
+              <div class="form-group"><label class="form-label">Angka 2</label><input type="text" id="cfgM2Val" class="form-control"><label class="form-label" style="margin-top:6px;">Label 2</label><input type="text" id="cfgM2Lbl" class="form-control"></div>
+              <div class="form-group"><label class="form-label">Angka 3</label><input type="text" id="cfgM3Val" class="form-control"><label class="form-label" style="margin-top:6px;">Label 3</label><input type="text" id="cfgM3Lbl" class="form-control"></div>
+            </div>
+
+            <h3 style="font-size:16px;font-weight:800;margin:24px 0 14px;color:var(--crimson);">About Me &amp; Kartu Kutipan Merah</h3>
+            <div class="form-group"><label class="form-label">Deskripsi Lengkap About Me</label><textarea id="cfgAboutMeText" class="form-control" style="min-height:130px;" required></textarea></div>
+            <div class="form-grid-2">
+              <div class="form-group"><label class="form-label">Teks Kutipan (Kartu Merah)</label><textarea id="cfgQuoteText" class="form-control"></textarea></div>
+              <div class="form-group"><label class="form-label">Tanda Tangan / Penulis Kutipan</label><input type="text" id="cfgQuoteAuthor" class="form-control"></div>
+            </div>
+
+            <h3 style="font-size:16px;font-weight:800;margin:24px 0 14px;color:var(--crimson);">Informasi Kontak</h3>
+            <div class="form-grid-2">
+              <div class="form-group"><label class="form-label">Email</label><input type="email" id="cfgEmail" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">WhatsApp (Contoh: 083130634789)</label><input type="text" id="cfgWhatsApp" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Instagram</label><input type="text" id="cfgInstagram" class="form-control"></div>
+              <div class="form-group"><label class="form-label">LinkedIn URL</label><input type="text" id="cfgLinkedIn" class="form-control"></div>
+            </div>
+            <button type="submit" id="saveProfileBtn" class="btn btn-primary">Simpan Perubahan Profil</button>
+          </form>
+        </div>
+
+        <!-- TAB 2: PORTFOLIO & CV GOOGLE DRIVE LINKS -->
+        <div id="tabProjects" class="admin-tab-content" style="display:none;">
+          <form id="projectAdminForm" class="admin-panel-card">
+            <h3 id="projectFormHeading" style="font-size:17px;font-weight:800;margin-bottom:16px;color:var(--crimson);">Tambah / Edit Tombol Link Google Drive</h3>
+            <input type="hidden" id="prjIdInput">
+            <div class="form-grid-3">
+              <div class="form-group"><label class="form-label">Nomor Urut (Misal: 01, 02)</label><input type="text" id="prjOrderNo" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Judul Tombol (Misal: PORTFOLIO / CV)</label><input type="text" id="prjTitle" class="form-control" required></div>
+              <div class="form-group">
+                <label class="form-label">Jenis Dokumen</label>
+                <select id="prjCategory" class="form-control">
+                  <option value="PORTFOLIO">Portfolio Folder (Google Drive)</option>
+                  <option value="CV">Curriculum Vitae (CV)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Keterangan Singkat pada Tombol</label><textarea id="prjDescription" class="form-control" required></textarea></div>
+            <div class="form-group"><label class="form-label">Link Tujuan Google Drive (URL)</label><input type="url" id="prjUrl" class="form-control" placeholder="https://drive.google.com/..." required></div>
+            <div style="display:flex;gap:10px;">
+              <button type="submit" id="saveProjectBtn" class="btn btn-primary">Simpan Tombol Link</button>
+              <button type="button" id="cancelProjectEditBtn" class="btn btn-secondary" style="display:none;">Batal Edit</button>
+            </div>
+          </form>
+
+          <div class="admin-panel-card">
+            <h3 style="font-size:16px;font-weight:800;margin-bottom:14px;">Daftar Tombol Link Aktif</h3>
+            <table class="admin-list-table">
+              <thead><tr><th>No</th><th>Judul &amp; Link Google Drive</th><th>Jenis</th><th>Aksi</th></tr></thead>
+              <tbody id="adminProjectsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: EXPERIENCE -->
+        <div id="tabExperience" class="admin-tab-content" style="display:none;">
+          <form id="expAdminForm" class="admin-panel-card">
+            <h3 id="expFormHeading" style="font-size:17px;font-weight:800;margin-bottom:16px;color:var(--crimson);">Tambah Pengalaman Kerja</h3>
+            <input type="hidden" id="expIdInput">
+            <div class="form-grid-2">
+              <div class="form-group"><label class="form-label">Nama Perusahaan / Usaha</label><input type="text" id="expCompany" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Jabatan / Posisi</label><input type="text" id="expRole" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Status</label><input type="text" id="expType" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Periode</label><input type="text" id="expPeriod" class="form-control" required></div>
+            </div>
+            <div class="form-group"><label class="form-label">Deskripsi Pekerjaan</label><textarea id="expDescription" class="form-control" required></textarea></div>
+            <div style="display:flex;gap:10px;">
+              <button type="submit" id="saveExpBtn" class="btn btn-primary">Simpan Pengalaman</button>
+              <button type="button" id="cancelExpEditBtn" class="btn btn-secondary" style="display:none;">Batal Edit</button>
+            </div>
+          </form>
+          <div class="admin-panel-card">
+            <h3 style="font-size:16px;font-weight:800;margin-bottom:14px;">Daftar Pengalaman Kerja</h3>
+            <table class="admin-list-table">
+              <thead><tr><th>Perusahaan &amp; Jabatan</th><th>Periode</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="adminExpTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 4: EDUCATION -->
+        <div id="tabEducation" class="admin-tab-content" style="display:none;">
+          <form id="eduAdminForm" class="admin-panel-card">
+            <h3 id="eduFormHeading" style="font-size:17px;font-weight:800;margin-bottom:16px;color:var(--crimson);">Tambah Pendidikan / Sertifikasi</h3>
+            <input type="hidden" id="eduIdInput">
+            <div class="form-grid-2">
+              <div class="form-group"><label class="form-label">Kategori</label><select id="eduCategory" class="form-control"><option value="Education">Education</option><option value="Certification">Certification</option></select></div>
+              <div class="form-group"><label class="form-label">Gelar / Nama Sertifikasi</label><input type="text" id="eduTitle" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Institusi</label><input type="text" id="eduInstitution" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Periode / Tahun</label><input type="text" id="eduPeriod" class="form-control" required></div>
+            </div>
+            <div class="form-group"><label class="form-label">Detail Tambahan</label><textarea id="eduDetails" class="form-control"></textarea></div>
+            <div style="display:flex;gap:10px;">
+              <button type="submit" id="saveEduBtn" class="btn btn-primary">Simpan Data</button>
+              <button type="button" id="cancelEduEditBtn" class="btn btn-secondary" style="display:none;">Batal Edit</button>
+            </div>
+          </form>
+          <div class="admin-panel-card">
+            <h3 style="font-size:16px;font-weight:800;margin-bottom:14px;">Daftar Pendidikan &amp; Sertifikasi</h3>
+            <table class="admin-list-table">
+              <thead><tr><th>Judul &amp; Institusi</th><th>Periode</th><th>Kategori</th><th>Aksi</th></tr></thead>
+              <tbody id="adminEduTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 5: SKILLS -->
+        <div id="tabSkills" class="admin-tab-content" style="display:none;">
+          <form id="skillAdminForm" class="admin-panel-card">
+            <h3 style="font-size:17px;font-weight:800;margin-bottom:16px;color:var(--crimson);">Tambah Keahlian</h3>
+            <div class="form-grid-2">
+              <div class="form-group"><label class="form-label">Nama Skill / Software</label><input type="text" id="skillNameInput" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Kelompok</label><select id="skillGroupInput" class="form-control"><option value="Design Tools">Design Tools</option><option value="Professional Skills">Professional Skills</option></select></div>
+            </div>
+            <button type="submit" id="saveSkillBtn" class="btn btn-primary">Tambah Skill</button>
+          </form>
+          <div class="admin-panel-card">
+            <h3 style="font-size:16px;font-weight:800;margin-bottom:14px;">Daftar Keahlian Aktif</h3>
+            <div id="adminSkillsList" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+          </div>
+        </div>
+
+        <!-- TAB 6: WORK PROCESS -->
+        <div id="tabProcess" class="admin-tab-content" style="display:none;">
+          <form id="processAdminForm" class="admin-panel-card">
+            <h3 id="processFormHeading" style="font-size:17px;font-weight:800;margin-bottom:16px;color:var(--crimson);">Kelola Tahapan Work Process</h3>
+            <input type="hidden" id="wrkIdInput">
+            <div class="form-grid-3">
+              <div class="form-group"><label class="form-label">Nomor (01 - 05)</label><input type="text" id="wrkNumber" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Judul Tahap</label><input type="text" id="wrkTitle" class="form-control" required></div>
+              <div class="form-group"><label class="form-label">Ikon</label><select id="wrkIconKey" class="form-control"><option value="search">Search</option><option value="bulb">Idea</option><option value="pen">Design</option><option value="code">Execute</option><option value="rocket">Deliver</option></select></div>
+            </div>
+            <div class="form-group"><label class="form-label">Deskripsi</label><textarea id="wrkDescription" class="form-control" required></textarea></div>
+            <div style="display:flex;gap:10px;">
+              <button type="submit" id="saveProcessBtn" class="btn btn-primary">Simpan Tahapan</button>
+              <button type="button" id="cancelProcessEditBtn" class="btn btn-secondary" style="display:none;">Batal Edit</button>
+            </div>
+          </form>
+          <div class="admin-panel-card">
+            <h3 style="font-size:16px;font-weight:800;margin-bottom:14px;">Daftar Tahapan Work Process</h3>
+            <table class="admin-list-table">
+              <thead><tr><th>No</th><th>Tahapan &amp; Deskripsi</th><th>Ikon</th><th>Aksi</th></tr></thead>
+              <tbody id="adminProcessTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GANTI PIN -->
+  <div id="changePinModal" class="modal-backdrop">
+    <div class="modal-box" style="max-width:420px;padding:28px;">
+      <button type="button" class="modal-close-btn" id="closeChangePinBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h3 style="font-size:18px;font-weight:800;margin-bottom:8px;">Ganti PIN Admin</h3>
+      <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:18px;">PIN baru minimal 6 karakter dan disimpan terenkripsi di server.</p>
+      <form id="changePinForm">
+        <div class="form-group"><label class="form-label">PIN Lama</label><input type="password" id="oldPinInput" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">PIN Baru</label><input type="password" id="newPinInput" class="form-control" minlength="6" required></div>
+        <div class="form-group"><label class="form-label">Konfirmasi PIN Baru</label><input type="password" id="confirmNewPinInput" class="form-control" minlength="6" required></div>
+        <button type="submit" id="submitChangePinBtn" class="btn btn-primary" style="width:100%;">Simpan PIN Baru</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyJMpx72G4KwFBv1cgRzNvmc6ejqootv_1m69Zh1fI3tK2Zk3Jm_RRdkmG1hHFiBCI/exec';
+
+      var SESSION_KEY = 'mka_portfolio_admin_token';
+      var CACHE_KEY = 'mka_portfolio_data_cache_v1';
+      var DEFAULT_PROFILE_ID = '1b32iBCb1LCPiOe6TDL8np_eXn44XxVGC';
+
+      var DEFAULT_SEED_DATA = {
+        profile: {
+          FullName: 'MUHAMMAD KAISAR AQSATA NUGROHO',
+          HeadlineRole: 'DIGITAL MARKETING | GRAPHIC DESIGN | UI/UX | CONTENT CREATOR',
+          HeroShortBio: 'Fresh graduate Manajemen Pemasaran UPN "Veteran" Jawa Timur (GPA 3.59/4.00) dengan pengalaman praktis dalam Digital Marketing, Social Media Management, Branding UMKM, dan Content Creation berbasis data.',
+          AvailabilityText: 'AVAILABLE FOR FREELANCE',
+          ProfileImageId: DEFAULT_PROFILE_ID,
+          Metric1Value: '3+',
+          Metric1Label: 'YEARS EXPERIENCE',
+          Metric2Value: '50+',
+          Metric2Label: 'VISUAL & CAMPAIGN WORKS',
+          Metric3Value: '10+',
+          Metric3Label: 'BRANDS & CLIENTS',
+          AboutMeText: 'Fresh graduate Manajemen Pemasaran di Universitas Pembangunan Nasional "Veteran" Jawa Timur (GPA 3.59/4.00) dengan pengalaman praktis di bidang Digital Marketing, Social Media Management, dan Content Creation.\n\nMemiliki keahlian dalam merancang strategi konten visual yang meningkatkan engagement, branding UMKM, pengelolaan operasional e-commerce (TikTok Shop & Shopee), serta pemasaran digital berbasis data.',
+          QuoteText: 'Good marketing and visual design are not just about how they look, but how they connect with people and drive measurable growth.',
+          QuoteAuthor: 'Kaisar Aqsata',
+          Email: 'kaisaraqsa@gmail.com',
+          WhatsApp: '083130634789',
+          Instagram: '@aqsasu_',
+          LinkedIn: 'https://www.linkedin.com/in/muhammad-kaisar-aqsata-nugroho-6b0321281/',
+          Location: 'Sidoarjo, Jawa Timur, 61258'
+        },
+        projects: [
+          {
+            ProjectId: 'PRJ-202611-001',
+            OrderNo: '01',
+            Title: 'PORTFOLIO WORKS & DESIGN ARCHIVE',
+            Category: 'PORTFOLIO',
+            Description: 'Kumpulan lengkap karya desain grafis, UI/UX, branding UMKM, dan strategi kampanye digital di Google Drive.',
+            ProjectUrl: 'https://drive.google.com/drive/folders/127D_fjARVJX-RNdS2IysAwqgyo_M1qu3?usp=drive_link'
+          },
+          {
+            ProjectId: 'PRJ-202611-002',
+            OrderNo: '02',
+            Title: 'CURRICULUM VITAE (CV)',
+            Category: 'CV',
+            Description: 'Dokumen resmi riwayat pendidikan, pengalaman kerja, sertifikasi, dan kompetensi profesional.',
+            ProjectUrl: 'https://drive.google.com/file/d/1H8PIabOrc_J10hx2cLm5NWqYfJezo2nF/view?usp=sharing'
+          }
+        ],
+        experiences: [],
+        education: [],
+        skills: [],
+        workProcess: []
+      };
+
+      var appState = {
+        data: null,
+        adminToken: sessionStorage.getItem(SESSION_KEY) || '',
+        profileImageBase64: '',
+        profileImageMime: '',
+        removeProfileImage: false,
+        confirmCallback: null
+      };
+
+      function isApiConfigured() {
+        return GAS_API_URL && GAS_API_URL.indexOf('https://script.google.com/') === 0;
+      }
+
+      function isAdminUrlRequested() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get('page') === 'admin' || window.location.hash === '#admin';
+      }
+
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function extractDriveFileId(input) {
+        if (!input) return '';
+        var str = String(input).trim();
+        var matchD = str.match(/\/d\/([a-zA-Z0-9_-]{15,})/);
+        if (matchD && matchD[1]) return matchD[1];
+        var matchId = str.match(/[?&]id=([a-zA-Z0-9_-]{15,})/);
+        if (matchId && matchId[1]) return matchId[1];
+        return str;
+      }
+
+      function buildDriveImageUrl(fileIdOrUrl) {
+        var cleanId = extractDriveFileId(fileIdOrUrl);
+        if (!cleanId) return '';
+        if (cleanId.indexOf('http://') === 0 || cleanId.indexOf('https://') === 0) return cleanId;
+        return 'https://lh3.googleusercontent.com/d/' + encodeURIComponent(cleanId);
+      }
+
+      function formatWaNumberIntl(rawPhone) {
+        var digits = String(rawPhone || '').replace(/[^0-9]/g, '');
+        if (!digits) return '';
+        if (digits.indexOf('0') === 0) return '62' + digits.substring(1);
+        return digits;
+      }
+
+      function cleanUrlString(rawUrl) {
+        var s = String(rawUrl || '').trim();
+        var mdMatch = s.match(/\((https?:\/\/[^\s)]+)\)/);
+        if (mdMatch && mdMatch[1]) return mdMatch[1];
+        return s.replace(/^\[|\]$/g, '');
+      }
+
+      function showToast(message, type) {
+        var container = document.getElementById('toastContainer');
+        var item = document.createElement('div');
+        item.className = 'toast-item ' + (type || 'info');
+        item.textContent = message;
+        container.appendChild(item);
+        setTimeout(function() { if (item.parentNode) item.parentNode.removeChild(item); }, 3800);
+      }
+
+      function openConfirmDialog(message, onConfirm) {
+        document.getElementById('confirmModalMessage').textContent = message;
+        appState.confirmCallback = onConfirm;
+        document.getElementById('confirmModal').classList.add('open');
+      }
+
+      function closeConfirmDialog() {
+        document.getElementById('confirmModal').classList.remove('open');
+        appState.confirmCallback = null;
+      }
+
+      function saveCacheData(data) {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        } catch (e) {}
+      }
+
+      function loadCacheData() {
+        try {
+          var raw = localStorage.getItem(CACHE_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function callGasApi(action, bodyObj, onSuccess, onFailure) {
+        if (!isApiConfigured()) {
+          if (onFailure) onFailure(new Error('GAS_API_URL belum diisi di index.html'));
+          return;
+        }
+
+        if (action === 'getPublicPortfolioData') {
+          fetch(GAS_API_URL + '?action=getPublicPortfolioData&t=' + Date.now(), {
+            method: 'GET',
+            redirect: 'follow'
+          })
+          .then(function(res) { return res.json(); })
+          .then(function(json) { if (onSuccess) onSuccess(json); })
+          .catch(function(err) {
+            if (onFailure) onFailure(err);
+          });
+          return;
+        }
+
+        var reqBody = Object.assign({ action: action }, bodyObj || {});
+        fetch(GAS_API_URL, {
+          method: 'POST',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(reqBody)
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(json) { if (onSuccess) onSuccess(json); })
+        .catch(function(err) {
+          showToast('Koneksi ke server Google gagal: ' + (err && err.message ? err.message : 'Network Error'), 'error');
+          if (onFailure) onFailure(err);
+        });
+      }
+
+      function compressImageFile(file, maxWidth, callback) {
+        if (!file) { callback('', ''); return; }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var w = img.width, h = img.height;
+            if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            var outMime = (file.type === 'image/png') ? 'image/png' : 'image/jpeg';
+            callback(canvas.toDataURL(outMime, 0.86).split(',')[1], outMime);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function getProcessSvgIcon(key) {
+        if (key === 'search') return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+        if (key === 'bulb') return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>';
+        if (key === 'pen') return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>';
+        if (key === 'code') return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>';
+        return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+      }
+
+      /* PUBLIC PORTFOLIO RENDER */
+      function renderPublicPortfolio(data) {
+        if (!data) return;
+        appState.data = data;
+        var p = data.profile || {};
+
+        var roleParts = String(p.HeadlineRole || 'DIGITAL MARKETING | CREATIVE DESIGN').split('|');
+        document.getElementById('navRolePrimary').textContent = (roleParts[0] || 'DIGITAL MARKETING').trim();
+        document.getElementById('navRoleSecondary').textContent = (roleParts[1] || 'CREATIVE & UI/UX').trim();
+        document.getElementById('navAvailability').textContent = p.AvailabilityText || 'AVAILABLE FOR FREELANCE';
+
+        document.getElementById('heroFullName').textContent = p.FullName || 'MUHAMMAD KAISAR AQSATA NUGROHO';
+        document.getElementById('heroHeadline').textContent = p.HeadlineRole || '';
+        document.getElementById('heroShortBio').textContent = p.HeroShortBio || '';
+        document.getElementById('heroLocationBadge').textContent = (p.Location || 'SIDOARJO, INDONESIA') + ' • ' + (p.AvailabilityText || 'AVAILABLE');
+
+        document.getElementById('metric1Val').textContent = p.Metric1Value || '3+';
+        document.getElementById('metric1Lbl').innerHTML = escapeHtml(p.Metric1Label || 'YEARS EXPERIENCE').replace(' ', '<br>');
+        document.getElementById('metric2Val').textContent = p.Metric2Value || '50+';
+        document.getElementById('metric2Lbl').innerHTML = escapeHtml(p.Metric2Label || 'PROJECTS COMPLETED').replace(' ', '<br>');
+        document.getElementById('metric3Val').textContent = p.Metric3Value || '10+';
+        document.getElementById('metric3Lbl').innerHTML = escapeHtml(p.Metric3Label || 'HAPPY CLIENTS').replace(' ', '<br>');
+
+        var portraitContainer = document.getElementById('heroPortraitContainer');
+        var activeProfileImgId = extractDriveFileId(p.ProfileImageId) || DEFAULT_PROFILE_ID;
+        portraitContainer.innerHTML = '<img src="' + buildDriveImageUrl(activeProfileImgId) + '" alt="' + escapeHtml(p.FullName || 'Profile') + '" class="hero-portrait-img">';
+
+        document.getElementById('aboutMeText').textContent = p.AboutMeText || '';
+        document.getElementById('aboutLocation').textContent = p.Location || 'Sidoarjo, Jawa Timur';
+        document.getElementById('quoteText').textContent = p.QuoteText || '';
+        document.getElementById('quoteAuthor').textContent = p.QuoteAuthor || 'Kaisar Aqsata';
+
+        renderDriveLinkButtons(data.projects || []);
+
+        var expHtml = '';
+        (data.experiences || []).forEach(function(exp) {
+          expHtml +=
+            '<div class="exp-item">' +
+              '<div class="exp-top"><div class="exp-role">' + escapeHtml(exp.Role) + '</div><div class="exp-period">' + escapeHtml(exp.Period) + '</div></div>' +
+              '<div class="exp-company-row"><span>' + escapeHtml(exp.Company) + '</span>' + (exp.EmploymentType ? '<span class="exp-type-badge">' + escapeHtml(exp.EmploymentType) + '</span>' : '') + '</div>' +
+              '<div class="exp-desc">' + escapeHtml(exp.Description) + '</div>' +
+            '</div>';
+        });
+        document.getElementById('experienceList').innerHTML = expHtml || '<p style="color:var(--text-muted);">Belum ada data pengalaman.</p>';
+
+        var eduHtml = '';
+        (data.education || []).forEach(function(edu) {
+          eduHtml +=
+            '<div class="edu-item">' +
+              '<div class="edu-row-top"><div class="edu-title">' + escapeHtml(edu.Title) + '</div><div class="edu-period">' + escapeHtml(edu.Period) + '</div></div>' +
+              '<div class="edu-inst">' + escapeHtml(edu.Institution) + '</div>' +
+              (edu.Details ? '<div class="edu-details">' + escapeHtml(edu.Details) + '</div>' : '') +
+            '</div>';
+        });
+        document.getElementById('educationList').innerHTML = eduHtml;
+
+        var skillHtml = '';
+        (data.skills || []).forEach(function(sk) { skillHtml += '<span class="skill-chip">' + escapeHtml(sk.SkillName) + '</span>'; });
+        document.getElementById('skillsList').innerHTML = skillHtml;
+
+        var procHtml = '';
+        (data.workProcess || []).forEach(function(wp) {
+          procHtml +=
+            '<div class="process-item">' +
+              '<div class="process-num">' + escapeHtml(wp.StepNumber) + '</div>' +
+              '<div class="process-icon-box">' + getProcessSvgIcon(wp.IconKey) + '</div>' +
+              '<div><div class="process-title">' + escapeHtml(wp.StepTitle) + '</div><div class="process-desc">' + escapeHtml(wp.Description) + '</div></div>' +
+            '</div>';
+        });
+        document.getElementById('workProcessList').innerHTML = procHtml;
+
+        var rawWa = String(p.WhatsApp || '').trim();
+        if (!rawWa || rawWa.indexOf('#ERROR') !== -1) rawWa = '083130634789';
+        var intlWa = formatWaNumberIntl(rawWa);
+        var waLink = intlWa ? ('https://wa.me/' + intlWa) : 'https://wa.me/6283130634789';
+
+        document.getElementById('primaryWhatsappCta').href = waLink;
+        document.getElementById('footerAvailabilityBtn').textContent = p.AvailabilityText || 'AVAILABLE FOR FREELANCE';
+        document.getElementById('footerOwnerName').textContent = p.FullName || 'Muhammad Kaisar Aqsata Nugroho';
+
+        var emailAddr = String(p.Email || 'kaisaraqsa@gmail.com').trim();
+        var igRaw = String(p.Instagram || '@aqsasu_').trim();
+        if (igRaw === '@kaisaraqsa') igRaw = '@aqsasu_';
+        var igHref = igRaw.indexOf('http') === 0 ? igRaw : ('https://www.instagram.com/' + igRaw.replace(/^@/, '') + '/');
+
+        var liHref = cleanUrlString(p.LinkedIn);
+        if (!liHref || liHref.indexOf('linkedin.com') === -1) {
+          liHref = 'https://www.linkedin.com/in/muhammad-kaisar-aqsata-nugroho-6b0321281/';
+        }
+
+        var contactHtml =
+          '<a href="mailto:' + escapeHtml(emailAddr) + '?subject=' + encodeURIComponent('Kolaborasi / Tawaran Kerja — Portfolio') + '" target="_top" class="contact-row">' +
+            '<div class="contact-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>' +
+            '<div><div class="contact-row-label">Email (Kirim Pesan)</div><div class="contact-row-val">' + escapeHtml(emailAddr) + '</div></div>' +
+          '</a>' +
+          '<a href="' + escapeHtml(waLink) + '" target="_blank" rel="noopener" class="contact-row">' +
+            '<div class="contact-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>' +
+            '<div><div class="contact-row-label">WhatsApp</div><div class="contact-row-val">' + escapeHtml(rawWa) + '</div></div>' +
+          '</a>' +
+          '<a href="' + escapeHtml(igHref) + '" target="_blank" rel="noopener" class="contact-row">' +
+            '<div class="contact-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div>' +
+            '<div><div class="contact-row-label">Instagram</div><div class="contact-row-val">' + escapeHtml(igRaw) + '</div></div>' +
+          '</a>' +
+          '<a href="' + escapeHtml(liHref) + '" target="_blank" rel="noopener" class="contact-row">' +
+            '<div class="contact-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>' +
+            '<div><div class="contact-row-label">LinkedIn</div><div class="contact-row-val">Muhammad Kaisar Aqsata N.</div></div>' +
+          '</a>';
+
+        document.getElementById('contactCardsList').innerHTML = contactHtml;
+      }
+
+      /* RENDER 2 TOMBOL LINK GOOGLE DRIVE (PORTFOLIO & CURRICULUM VITAE) */
+      function renderDriveLinkButtons(projects) {
+        var grid = document.getElementById('projectsGrid');
+        var list = (projects && projects.length > 0 && projects[0].ProjectUrl) ? projects : DEFAULT_SEED_DATA.projects;
+
+        var html = '';
+        list.forEach(function(item, idx) {
+          var url = cleanUrlString(item.ProjectUrl) || '#';
+          var isCv = String(item.Category || '').toUpperCase() === 'CV' || String(item.Title || '').toUpperCase().indexOf('CURRICULUM') !== -1 || String(item.Title || '').toUpperCase().indexOf('CV') !== -1;
+
+          var iconSvg = isCv
+            ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'
+            : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+
+          var ctaText = isCv ? 'Buka Curriculum Vitae (Google Drive)' : 'Buka Folder Portfolio (Google Drive)';
+          var displayNum = item.OrderNo || ('0' + (idx + 1));
+
+          html +=
+            '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" class="drive-link-btn-card">' +
+              '<div>' +
+                '<div class="drive-link-top">' +
+                  '<div class="drive-link-icon-badge">' + iconSvg + '</div>' +
+                  '<div class="drive-link-num">' + escapeHtml(displayNum) + '</div>' +
+                '</div>' +
+                '<div style="margin-top:20px;">' +
+                  '<h3 class="drive-link-title">' + escapeHtml(item.Title) + '</h3>' +
+                  '<p class="drive-link-desc">' + escapeHtml(item.Description || '') + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="drive-link-cta-bar">' +
+                '<span>' + ctaText + '</span>' +
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>' +
+              '</div>' +
+            '</a>';
+        });
+
+        grid.innerHTML = html;
+      }
+
+      /* ADMIN FORMS POPULATE */
+      function populateAdminForms(data) {
+        if (!data) return;
+        var p = data.profile || {};
+        document.getElementById('cfgFullName').value = p.FullName || '';
+        document.getElementById('cfgHeadlineRole').value = p.HeadlineRole || '';
+        document.getElementById('cfgAvailability').value = p.AvailabilityText || '';
+        document.getElementById('cfgLocation').value = p.Location || '';
+        document.getElementById('cfgHeroShortBio').value = p.HeroShortBio || '';
+        document.getElementById('cfgM1Val').value = p.Metric1Value || '';
+        document.getElementById('cfgM1Lbl').value = p.Metric1Label || '';
+        document.getElementById('cfgM2Val').value = p.Metric2Value || '';
+        document.getElementById('cfgM2Lbl').value = p.Metric2Label || '';
+        document.getElementById('cfgM3Val').value = p.Metric3Value || '';
+        document.getElementById('cfgM3Lbl').value = p.Metric3Label || '';
+        document.getElementById('cfgAboutMeText').value = p.AboutMeText || '';
+        document.getElementById('cfgQuoteText').value = p.QuoteText || '';
+        document.getElementById('cfgQuoteAuthor').value = p.QuoteAuthor || '';
+        document.getElementById('cfgEmail').value = p.Email || '';
+        document.getElementById('cfgWhatsApp').value = (p.WhatsApp && p.WhatsApp.indexOf('#ERROR') === -1) ? p.WhatsApp : '083130634789';
+        document.getElementById('cfgInstagram').value = p.Instagram || '@aqsasu_';
+        document.getElementById('cfgLinkedIn').value = cleanUrlString(p.LinkedIn) || 'https://www.linkedin.com/in/muhammad-kaisar-aqsata-nugroho-6b0321281/';
+
+        var activeImgId = extractDriveFileId(p.ProfileImageId) || DEFAULT_PROFILE_ID;
+        document.getElementById('cfgProfileDriveLink').value = activeImgId;
+        var prev = document.getElementById('cfgProfilePreview');
+        prev.innerHTML = activeImgId ? '<img src="' + buildDriveImageUrl(activeImgId) + '" alt="Profil">' : 'Belum ada foto';
+        appState.profileImageBase64 = '';
+        appState.removeProfileImage = false;
+        document.getElementById('cfgProfilePhotoInput').value = '';
+
+        var prjRows = '';
+        (data.projects || []).forEach(function(item) {
+          prjRows += '<tr><td style="font-weight:800;color:var(--crimson);">' + escapeHtml(item.OrderNo) + '</td><td><div style="font-weight:700;">' + escapeHtml(item.Title) + '</div><div style="font-size:11px;color:var(--text-muted);word-break:break-all;">' + escapeHtml(item.ProjectUrl || '') + '</div></td><td>' + escapeHtml(item.Category || 'PORTFOLIO') + '</td><td style="white-space:nowrap;"><button type="button" class="btn btn-secondary btn-sm" data-edit-project="' + escapeHtml(item.ProjectId) + '">Edit</button> <button type="button" class="btn btn-danger btn-sm" data-del-project="' + escapeHtml(item.ProjectId) + '">Hapus</button></td></tr>';
+        });
+        document.getElementById('adminProjectsTableBody').innerHTML = prjRows || '<tr><td colspan="4" style="color:var(--text-muted);">Belum ada tombol link.</td></tr>';
+
+        var expRows = '';
+        (data.experiences || []).forEach(function(item) {
+          expRows += '<tr><td><div style="font-weight:700;">' + escapeHtml(item.Company) + '</div><div style="font-size:12px;color:var(--crimson);">' + escapeHtml(item.Role) + '</div></td><td>' + escapeHtml(item.Period) + '</td><td>' + escapeHtml(item.EmploymentType) + '</td><td style="white-space:nowrap;"><button type="button" class="btn btn-secondary btn-sm" data-edit-exp="' + escapeHtml(item.ExpId) + '">Edit</button> <button type="button" class="btn btn-danger btn-sm" data-del-exp="' + escapeHtml(item.ExpId) + '">Hapus</button></td></tr>';
+        });
+        document.getElementById('adminExpTableBody').innerHTML = expRows || '<tr><td colspan="4">Belum ada pengalaman.</td></tr>';
+
+        var eduRows = '';
+        (data.education || []).forEach(function(item) {
+          eduRows += '<tr><td><div style="font-weight:700;">' + escapeHtml(item.Title) + '</div><div style="font-size:12px;color:var(--text-muted);">' + escapeHtml(item.Institution) + '</div></td><td>' + escapeHtml(item.Period) + '</td><td>' + escapeHtml(item.Category) + '</td><td style="white-space:nowrap;"><button type="button" class="btn btn-secondary btn-sm" data-edit-edu="' + escapeHtml(item.EduId) + '">Edit</button> <button type="button" class="btn btn-danger btn-sm" data-del-edu="' + escapeHtml(item.EduId) + '">Hapus</button></td></tr>';
+        });
+        document.getElementById('adminEduTableBody').innerHTML = eduRows || '<tr><td colspan="4">Belum ada pendidikan.</td></tr>';
+
+        var skBadges = '';
+        (data.skills || []).forEach(function(item) {
+          skBadges += '<div style="display:inline-flex;align-items:center;gap:8px;background:#1A1A20;border:1px solid var(--border-strong);padding:7px 12px;border-radius:6px;font-size:12px;"><span>' + escapeHtml(item.SkillName) + '</span><button type="button" data-del-skill="' + escapeHtml(item.SkillId) + '" style="background:none;border:none;color:#FF5C66;cursor:pointer;font-weight:800;font-size:14px;">&times;</button></div>';
+        });
+        document.getElementById('adminSkillsList').innerHTML = skBadges;
+
+        var procRows = '';
+        (data.workProcess || []).forEach(function(item) {
+          procRows += '<tr><td style="font-weight:800;color:var(--crimson);">' + escapeHtml(item.StepNumber) + '</td><td><div style="font-weight:700;">' + escapeHtml(item.StepTitle) + '</div><div style="font-size:12px;color:var(--text-muted);">' + escapeHtml(item.Description) + '</div></td><td>' + escapeHtml(item.IconKey) + '</td><td style="white-space:nowrap;"><button type="button" class="btn btn-secondary btn-sm" data-edit-proc="' + escapeHtml(item.StepId) + '">Edit</button> <button type="button" class="btn btn-danger btn-sm" data-del-proc="' + escapeHtml(item.StepId) + '">Hapus</button></td></tr>';
+        });
+        document.getElementById('adminProcessTableBody').innerHTML = procRows;
+      }
+
+      function switchToAdminView() {
+        document.getElementById('publicView').classList.add('hidden');
+        document.getElementById('adminView').classList.add('active');
+        if (!isApiConfigured()) {
+          showToast('GAS_API_URL di index.html belum diisi.', 'error');
+        }
+        if (appState.adminToken) {
+          callGasApi('validateAdminSession', { token: appState.adminToken }, function(res) {
+            if (res && res.valid) {
+              document.getElementById('adminLoginScreen').style.display = 'none';
+              document.getElementById('adminDashboardScreen').style.display = 'block';
+              populateAdminForms(appState.data);
+            } else {
+              appState.adminToken = '';
+              sessionStorage.removeItem(SESSION_KEY);
+              document.getElementById('adminLoginScreen').style.display = 'flex';
+              document.getElementById('adminDashboardScreen').style.display = 'none';
+            }
+          });
+        } else {
+          document.getElementById('adminLoginScreen').style.display = 'flex';
+          document.getElementById('adminDashboardScreen').style.display = 'none';
+        }
+      }
+
+      function switchToPublicView() {
+        document.getElementById('adminView').classList.remove('active');
+        document.getElementById('publicView').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function handleBackendResponse(res, successMsg, resetFn) {
+        if (!res || !res.success) {
+          showToast((res && res.message) ? res.message : 'Gagal menyimpan data.', 'error');
+          if (res && res.unauthorized) {
+            appState.adminToken = '';
+            sessionStorage.removeItem(SESSION_KEY);
+            switchToAdminView();
+          }
+          return;
+        }
+        showToast(successMsg, 'success');
+        if (res.data) {
+          saveCacheData(res.data);
+          renderPublicPortfolio(res.data);
+          populateAdminForms(res.data);
+        }
+        if (resetFn) resetFn();
+      }
+
+      function resetProjectForm() {
+        document.getElementById('prjIdInput').value = '';
+        document.getElementById('prjOrderNo').value = '';
+        document.getElementById('prjTitle').value = '';
+        document.getElementById('prjCategory').value = 'PORTFOLIO';
+        document.getElementById('prjDescription').value = '';
+        document.getElementById('prjUrl').value = '';
+        document.getElementById('projectFormHeading').textContent = 'Tambah / Edit Tombol Link Google Drive';
+        document.getElementById('cancelProjectEditBtn').style.display = 'none';
+      }
+
+      function resetExpForm() {
+        ['expIdInput', 'expCompany', 'expRole', 'expType', 'expPeriod', 'expDescription'].forEach(function(id) { document.getElementById(id).value = ''; });
+        document.getElementById('expFormHeading').textContent = 'Tambah Pengalaman Kerja';
+        document.getElementById('cancelExpEditBtn').style.display = 'none';
+      }
+
+      function resetEduForm() {
+        ['eduIdInput', 'eduTitle', 'eduInstitution', 'eduPeriod', 'eduDetails'].forEach(function(id) { document.getElementById(id).value = ''; });
+        document.getElementById('eduCategory').value = 'Education';
+        document.getElementById('eduFormHeading').textContent = 'Tambah Pendidikan / Sertifikasi';
+        document.getElementById('cancelEduEditBtn').style.display = 'none';
+      }
+
+      function resetProcessForm() {
+        ['wrkIdInput', 'wrkNumber', 'wrkTitle', 'wrkDescription'].forEach(function(id) { document.getElementById(id).value = ''; });
+        document.getElementById('wrkIconKey').value = 'search';
+        document.getElementById('processFormHeading').textContent = 'Kelola Tahapan Work Process';
+        document.getElementById('cancelProcessEditBtn').style.display = 'none';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() { document.getElementById('mobileDrawer').classList.toggle('open'); });
+        document.querySelectorAll('.mobile-nav-link').forEach(function(el) { el.addEventListener('click', function() { document.getElementById('mobileDrawer').classList.remove('open'); }); });
+
+        var clickCount = 0, clickTimer = null;
+        document.getElementById('secretAdminTrigger').addEventListener('click', function() {
+          clickCount++; clearTimeout(clickTimer);
+          if (clickCount >= 3) { clickCount = 0; switchToAdminView(); }
+          else { clickTimer = setTimeout(function() { clickCount = 0; }, 900); }
+        });
+
+        document.getElementById('confirmCancelBtn').addEventListener('click', closeConfirmDialog);
+        document.getElementById('confirmProceedBtn').addEventListener('click', function() { var cb = appState.confirmCallback; closeConfirmDialog(); if (cb) cb(); });
+
+        document.getElementById('backToPublicBtn').addEventListener('click', switchToPublicView);
+        document.getElementById('viewPublicSiteBtn').addEventListener('click', switchToPublicView);
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var pin = document.getElementById('adminPinInput').value;
+          var btn = document.getElementById('adminLoginSubmitBtn');
+          var errBox = document.getElementById('loginErrorBox');
+          errBox.style.display = 'none'; btn.disabled = true; btn.textContent = 'Memverifikasi...';
+          callGasApi('verifyAdminPin', { pin: pin }, function(res) {
+            btn.disabled = false; btn.textContent = 'Masuk Dashboard';
+            if (res && res.success) {
+              appState.adminToken = res.token; sessionStorage.setItem(SESSION_KEY, res.token);
+              document.getElementById('adminPinInput').value = '';
+              document.getElementById('adminLoginScreen').style.display = 'none';
+              document.getElementById('adminDashboardScreen').style.display = 'block';
+              populateAdminForms(appState.data);
+              showToast('Login berhasil!', 'success');
+            } else {
+              errBox.textContent = (res && res.message) ? res.message : 'PIN salah.'; errBox.style.display = 'block';
+            }
+          }, function() { btn.disabled = false; btn.textContent = 'Masuk Dashboard'; });
+        });
+
+        document.getElementById('adminLogoutBtn').addEventListener('click', function() {
+          var tok = appState.adminToken; appState.adminToken = ''; sessionStorage.removeItem(SESSION_KEY);
+          callGasApi('logoutAdmin', { token: tok }); showToast('Logout berhasil.', 'info'); switchToPublicView();
+        });
+
+        document.getElementById('openChangePinModalBtn').addEventListener('click', function() { document.getElementById('changePinModal').classList.add('open'); });
+        document.getElementById('closeChangePinBtn').addEventListener('click', function() { document.getElementById('changePinModal').classList.remove('open'); });
+        document.getElementById('changePinForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var oldPin = document.getElementById('oldPinInput').value, newPin = document.getElementById('newPinInput').value, confirmPin = document.getElementById('confirmNewPinInput').value;
+          if (newPin !== confirmPin) { showToast('Konfirmasi PIN baru tidak cocok.', 'error'); return; }
+          var btn = document.getElementById('submitChangePinBtn'); btn.disabled = true;
+          callGasApi('changeAdminPin', { token: appState.adminToken, oldPin: oldPin, newPin: newPin }, function(res) {
+            btn.disabled = false;
+            if (res && res.success) { document.getElementById('changePinForm').reset(); document.getElementById('changePinModal').classList.remove('open'); showToast('PIN Admin diperbarui!', 'success'); }
+            else { showToast((res && res.message) ? res.message : 'Gagal mengganti PIN.', 'error'); }
+          }, function() { btn.disabled = false; });
+        });
+
+        document.getElementById('adminTabsNav').addEventListener('click', function(e) {
+          var btn = e.target.closest('.admin-tab-btn');
+          if (!btn) return;
+          var targetId = btn.getAttribute('data-tab');
+          document.querySelectorAll('.admin-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          document.querySelectorAll('.admin-tab-content').forEach(function(sec) { sec.style.display = (sec.id === targetId) ? 'block' : 'none'; });
+        });
+
+        document.getElementById('cfgProfilePhotoInput').addEventListener('change', function(e) {
+          var file = e.target.files[0]; if (!file) return;
+          compressImageFile(file, 1200, function(b64, mime) {
+            appState.profileImageBase64 = b64; appState.profileImageMime = mime; appState.removeProfileImage = false;
+            document.getElementById('cfgProfilePreview').innerHTML = '<img src="data:' + mime + ';base64,' + b64 + '">';
+          });
+        });
+
+        document.getElementById('cfgProfileDriveLink').addEventListener('input', function(e) {
+          var extracted = extractDriveFileId(e.target.value);
+          if (extracted) {
+            appState.removeProfileImage = false;
+            document.getElementById('cfgProfilePreview').innerHTML = '<img src="' + buildDriveImageUrl(extracted) + '">';
+          }
+        });
+
+        document.getElementById('removeProfilePhotoBtn').addEventListener('click', function() {
+          appState.profileImageBase64 = ''; appState.profileImageMime = ''; appState.removeProfileImage = true;
+          document.getElementById('cfgProfilePhotoInput').value = '';
+          document.getElementById('cfgProfileDriveLink').value = '';
+          document.getElementById('cfgProfilePreview').textContent = 'Foto akan dihapus saat disimpan';
+        });
+
+        document.getElementById('profileAdminForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var btn = document.getElementById('saveProfileBtn'); btn.disabled = true; btn.textContent = 'Menyimpan...';
+          var payload = {
+            FullName: document.getElementById('cfgFullName').value.trim(),
+            HeadlineRole: document.getElementById('cfgHeadlineRole').value.trim(),
+            AvailabilityText: document.getElementById('cfgAvailability').value.trim(),
+            Location: document.getElementById('cfgLocation').value.trim(),
+            HeroShortBio: document.getElementById('cfgHeroShortBio').value.trim(),
+            Metric1Value: document.getElementById('cfgM1Val').value.trim(),
+            Metric1Label: document.getElementById('cfgM1Lbl').value.trim(),
+            Metric2Value: document.getElementById('cfgM2Val').value.trim(),
+            Metric2Label: document.getElementById('cfgM2Lbl').value.trim(),
+            Metric3Value: document.getElementById('cfgM3Val').value.trim(),
+            Metric3Label: document.getElementById('cfgM3Lbl').value.trim(),
+            AboutMeText: document.getElementById('cfgAboutMeText').value.trim(),
+            QuoteText: document.getElementById('cfgQuoteText').value.trim(),
+            QuoteAuthor: document.getElementById('cfgQuoteAuthor').value.trim(),
+            Email: document.getElementById('cfgEmail').value.trim(),
+            WhatsApp: document.getElementById('cfgWhatsApp').value.trim(),
+            Instagram: document.getElementById('cfgInstagram').value.trim(),
+            LinkedIn: document.getElementById('cfgLinkedIn').value.trim(),
+            directImageId: extractDriveFileId(document.getElementById('cfgProfileDriveLink').value),
+            imageBase64: appState.profileImageBase64,
+            imageMime: appState.profileImageMime,
+            removeImage: appState.removeProfileImage
+          };
+          callGasApi('saveProfileConfig', { token: appState.adminToken, payload: payload }, function(res) {
+            btn.disabled = false; btn.textContent = 'Simpan Perubahan Profil';
+            handleBackendResponse(res, 'Profil & Kontak berhasil disimpan!');
+          }, function() { btn.disabled = false; btn.textContent = 'Simpan Perubahan Profil'; });
+        });
+
+        document.getElementById('projectAdminForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var btn = document.getElementById('saveProjectBtn'); btn.disabled = true; btn.textContent = 'Menyimpan...';
+          var payload = {
+            ProjectId: document.getElementById('prjIdInput').value.trim(),
+            OrderNo: document.getElementById('prjOrderNo').value.trim(),
+            Title: document.getElementById('prjTitle').value.trim(),
+            Category: document.getElementById('prjCategory').value,
+            Description: document.getElementById('prjDescription').value.trim(),
+            ProjectUrl: document.getElementById('prjUrl').value.trim()
+          };
+          callGasApi('saveProject', { token: appState.adminToken, payload: payload }, function(res) {
+            btn.disabled = false; btn.textContent = 'Simpan Tombol Link';
+            handleBackendResponse(res, 'Tombol link berhasil disimpan!', resetProjectForm);
+          }, function() { btn.disabled = false; btn.textContent = 'Simpan Tombol Link'; });
+        });
+
+        document.getElementById('cancelProjectEditBtn').addEventListener('click', resetProjectForm);
+
+        document.getElementById('adminProjectsTableBody').addEventListener('click', function(e) {
+          var editBtn = e.target.closest('[data-edit-project]');
+          var delBtn = e.target.closest('[data-del-project]');
+          if (editBtn && appState.data) {
+            var id = editBtn.getAttribute('data-edit-project');
+            var found = appState.data.projects.filter(function(x) { return x.ProjectId === id; })[0];
+            if (found) {
+              document.getElementById('prjIdInput').value = found.ProjectId;
+              document.getElementById('prjOrderNo').value = found.OrderNo;
+              document.getElementById('prjTitle').value = found.Title;
+              document.getElementById('prjCategory').value = found.Category || 'PORTFOLIO';
+              document.getElementById('prjDescription').value = found.Description;
+              document.getElementById('prjUrl').value = found.ProjectUrl || '';
+              document.getElementById('projectFormHeading').textContent = 'Edit Link: ' + found.Title;
+              document.getElementById('cancelProjectEditBtn').style.display = 'inline-flex';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }
+          if (delBtn) {
+            var delId = delBtn.getAttribute('data-del-project');
+            openConfirmDialog('Hapus tombol link ini?', function() {
+              callGasApi('deleteProject', { token: appState.adminToken, id: delId }, function(res) { handleBackendResponse(res, 'Tombol link berhasil dihapus!', resetProjectForm); });
+            });
+          }
+        });
+
+        document.getElementById('expAdminForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var btn = document.getElementById('saveExpBtn'); btn.disabled = true;
+          var payload = {
+            ExpId: document.getElementById('expIdInput').value.trim(), Company: document.getElementById('expCompany').value.trim(),
+            Role: document.getElementById('expRole').value.trim(), EmploymentType: document.getElementById('expType').value.trim(),
+            Period: document.getElementById('expPeriod').value.trim(), Description: document.getElementById('expDescription').value.trim()
+          };
+          callGasApi('saveExperience', { token: appState.adminToken, payload: payload }, function(res) { btn.disabled = false; handleBackendResponse(res, 'Pengalaman disimpan!', resetExpForm); }, function() { btn.disabled = false; });
+        });
+        document.getElementById('cancelExpEditBtn').addEventListener('click', resetExpForm);
+        document.getElementById('adminExpTableBody').addEventListener('click', function(e) {
+          var editBtn = e.target.closest('[data-edit-exp]'), delBtn = e.target.closest('[data-del-exp]');
+          if (editBtn && appState.data) {
+            var found = appState.data.experiences.filter(function(x) { return x.ExpId === editBtn.getAttribute('data-edit-exp'); })[0];
+            if (found) {
+              document.getElementById('expIdInput').value = found.ExpId; document.getElementById('expCompany').value = found.Company;
+              document.getElementById('expRole').value = found.Role; document.getElementById('expType').value = found.EmploymentType;
+              document.getElementById('expPeriod').value = found.Period; document.getElementById('expDescription').value = found.Description;
+              document.getElementById('expFormHeading').textContent = 'Edit: ' + found.Company;
+              document.getElementById('cancelExpEditBtn').style.display = 'inline-flex';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }
+          if (delBtn) {
+            var delId = delBtn.getAttribute('data-del-exp');
+            openConfirmDialog('Hapus riwayat pengalaman ini?', function() { callGasApi('deleteExperience', { token: appState.adminToken, id: delId }, function(res) { handleBackendResponse(res, 'Dihapus!', resetExpForm); }); });
+          }
+        });
+
+        document.getElementById('eduAdminForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var btn = document.getElementById('saveEduBtn'); btn.disabled = true;
+          var payload = {
+            EduId: document.getElementById('eduIdInput').value.trim(), Category: document.getElementById('eduCategory').value,
+            Title: document.getElementById('eduTitle').value.trim(), Institution: document.getElementById('eduInstitution').value.trim(),
+            Period: document.getElementById('eduPeriod').value.trim(), Details: document.getElementById('eduDetails').value.trim()
+          };
+          callGasApi('saveEducation', { token: appState.adminToken, payload: payload }, function(res) { btn.disabled = false; handleBackendResponse(res, 'Data disimpan!', resetEduForm); }, function() { btn.disabled = false; });
+        });
+        document.getElementById('cancelEduEditBtn').addEventListener('click', resetEduForm);
+        document.getElementById('adminEduTableBody').addEventListener('click', function(e) {
+          var editBtn = e.target.closest('[data-edit-edu]'), delBtn = e.target.closest('[data-del-edu]');
+          if (editBtn && appState.data) {
+            var found = appState.data.education.filter(function(x) { return x.EduId === editBtn.getAttribute('data-edit-edu'); })[0];
+            if (found) {
+              document.getElementById('eduIdInput').value = found.EduId; document.getElementById('eduCategory').value = found.Category;
+              document.getElementById('eduTitle').value = found.Title; document.getElementById('eduInstitution').value = found.Institution;
+              document.getElementById('eduPeriod').value = found.Period; document.getElementById('eduDetails').value = found.Details || '';
+              document.getElementById('eduFormHeading').textContent = 'Edit: ' + found.Title;
+              document.getElementById('cancelEduEditBtn').style.display = 'inline-flex';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }
+          if (delBtn) {
+            var delId = delBtn.getAttribute('data-del-edu');
+            openConfirmDialog('Hapus data ini?', function() { callGasApi('deleteEducation', { token: appState.adminToken, id: delId }, function(res) { handleBackendResponse(res, 'Dihapus!', resetEduForm); }); });
+          }
+        });
+
+        document.getElementById('skillAdminForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var btn = document.getElementById('saveSkillBtn'); btn.disabled = true;
+          callGasApi('saveSkill', { token: appState.adminToken, payload: { SkillName: document.getElementById('skillNameInput').value.trim(), GroupCategory: document.getElementById('skillGroupInput').value } }, function(res) {
+            btn.disabled = false; handleBackendResponse(res, 'Skill ditambahkan!', function() { document.getElementById('skillNameInput').value = ''; });
+          }, function() { btn.disabled = false; });
+        });
+        document.getElementById('adminSkillsList').addEventListener('click', function(e) {
+          var delBtn = e.target.closest('[data-del-skill]');
+          if (delBtn) {
+            var delId = delBtn.getAttribute('data-del-skill');
+            openConfirmDialog('Hapus skill ini?', function() { callGasApi('deleteSkill', { token: appState.adminToken, id: delId }, function(res) { handleBackendResponse(res, 'Skill dihapus!'); }); });
+          }
+        });
+
+        document.getElementById('processAdminForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var btn = document.getElementById('saveProcessBtn'); btn.disabled = true;
+          var payload = {
+            StepId: document.getElementById('wrkIdInput').value.trim(), StepNumber: document.getElementById('wrkNumber').value.trim(),
+            StepTitle: document.getElementById('wrkTitle').value.trim(), IconKey: document.getElementById('wrkIconKey').value,
+            Description: document.getElementById('wrkDescription').value.trim()
+          };
+          callGasApi('saveWorkProcess', { token: appState.adminToken, payload: payload }, function(res) { btn.disabled = false; handleBackendResponse(res, 'Tahapan disimpan!', resetProcessForm); }, function() { btn.disabled = false; });
+        });
+        document.getElementById('cancelProcessEditBtn').addEventListener('click', resetProcessForm);
+        document.getElementById('adminProcessTableBody').addEventListener('click', function(e) {
+          var editBtn = e.target.closest('[data-edit-proc]'), delBtn = e.target.closest('[data-del-proc]');
+          if (editBtn && appState.data) {
+            var found = appState.data.workProcess.filter(function(x) { return x.StepId === editBtn.getAttribute('data-edit-proc'); })[0];
+            if (found) {
+              document.getElementById('wrkIdInput').value = found.StepId; document.getElementById('wrkNumber').value = found.StepNumber;
+              document.getElementById('wrkTitle').value = found.StepTitle; document.getElementById('wrkIconKey').value = found.IconKey || 'search';
+              document.getElementById('wrkDescription').value = found.Description;
+              document.getElementById('processFormHeading').textContent = 'Edit Tahap ' + found.StepNumber;
+              document.getElementById('cancelProcessEditBtn').style.display = 'inline-flex';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }
+          if (delBtn) {
+            var delId = delBtn.getAttribute('data-del-proc');
+            openConfirmDialog('Hapus tahapan ini?', function() { callGasApi('deleteWorkProcess', { token: appState.adminToken, id: delId }, function(res) { handleBackendResponse(res, 'Dihapus!', resetProcessForm); }); });
+          }
+        });
+
+        var cachedData = loadCacheData();
+        if (cachedData) {
+          renderPublicPortfolio(cachedData);
+          document.getElementById('globalLoader').classList.add('hidden');
+        } else if (!isApiConfigured()) {
+          renderPublicPortfolio(DEFAULT_SEED_DATA);
+          document.getElementById('globalLoader').classList.add('hidden');
+        }
+
+        callGasApi('getPublicPortfolioData', null, function(res) {
+          document.getElementById('globalLoader').classList.add('hidden');
+          if (res && res.success && res.data) {
+            saveCacheData(res.data);
+            renderPublicPortfolio(res.data);
+          } else if (!cachedData) {
+            renderPublicPortfolio(DEFAULT_SEED_DATA);
+          }
+          if (isAdminUrlRequested()) { switchToAdminView(); }
+        }, function() {
+          document.getElementById('globalLoader').classList.add('hidden');
+          if (!cachedData) { renderPublicPortfolio(DEFAULT_SEED_DATA); }
+          if (isAdminUrlRequested()) { switchToAdminView(); }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
